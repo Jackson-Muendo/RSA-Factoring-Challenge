@@ -1,58 +1,48 @@
-#!/usr/bin/python3
-"""read_file
-    """
-from sys import argv
+#!/usr/bin/env bash
+#is a challenge
+check_factor()
+{
+	if [ $# -ne 3 ];
+        then
+                args=("$@")
+                count=0
+                num2=1
+                for a in ${args[*]};
+                do
+                        if [ $count -gt 1 ];
+                        then
+                                num2=$(echo $a*$num2 | bc)
+                        fi
+                        count=$((count + 1))
+                done
+        else
+                num2=$3
+        fi
 
+        num1=$2
+        num=$(echo "$1" | tr ':' '=')
 
-def isPrime(n):
+        result=$(echo "if($num2 > $num1) 1 else 0" | bc)
+	        if ((result == 1)); then
+		        numcp=$num1
+		        num1=$num2
+		        num2=$numcp
+                fi
 
-    # Corner cases
-    if (n <= 1):
-        return False
-    if (n <= 3):
-        return True
+        echo "$num$num1*$num2"
+}
 
-    # This is checked so that we can skip
-    # middle five numbers in below loop
-    if (n % 2 == 0 or n % 3 == 0):
-        return False
+if [ $# -ne 1 ]
+then
+        echo 'Usage: rsa <file>'
+        exit 1
+else
 
-    i = 5
-    while(i * i <= n):
-        if (n % i == 0 or n % (i + 2) == 0):
-            return False
-        i = i + 6
+        while read i
+        do
 
-    return True
+                result=$(factor "$i")
+                check_factor $result
 
-def factory(n=0):
-    if (n % 2 == 0):
-        return 2
-    i = 3
-    while i * i <= n:
-        if n % i == 0:
-            return i
-        i += 2
-
-
-def factors(filename):
-    """read_file(filename)
-    Keyword Arguments:
-        filename {str} -- name of the file (default: {""})
-    """
-    with open(filename, encoding="utf-8") as my_file:
-        for i in my_file.readlines():
-            n = int(i)
-            result = factory(n)
-            prime = isPrime(result)
-            if prime is False:
-                return
-            div = n//result
-            prime2 = isPrime(div)
-            if prime2 is False:
-                return
-            print("{}={}*{}".format(int(n), int(div), int(result)))
-
-
-if __name__ == "__main__":
-    factors(argv[1])
+        done < "$1"
+fi
