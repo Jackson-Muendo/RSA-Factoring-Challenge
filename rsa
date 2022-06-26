@@ -1,48 +1,39 @@
-#!/usr/bin/env python3
-import sys
-import os
+#!/usr/bin/bash
+check_factor()
+{
+	if [ $# -ne 3 ];
+        then
+                args= fi
+                count=0
+                num2=1
+                for a in ${args[*]};
+                do
+                        if [ $count -gt 1 ];
+                        then
+                                num2=$(echo $a*$num2 | bc)
+                        fi
+                        count=$((count + 1))
+                done
+        else
+                num2=$3
+        fi
 
-def main():
-    if len(sys.argv) != 2:
-        print("Usage: factors <file>", file=sys.stderr)
-        exit(1)
-    if not os.path.isfile(sys.argv[1]):
-        print(f"factors: File {sys.argv[1]} not found", file=sys.stderr)
-        exit(1)
+        num1=$2
+        num=$(echo "$1" | tr ':' '=')
+        echo "$num$num1*$num2"
+}
 
-    with open(sys.argv[1]) as f:
-        for i in f:
-            i = int(i)
-            if i % 2 == 0:
-                print(f"{i}={i // 2}*2")
-                continue
+if [ $# -ne 1 ]
+then
+        echo 'Usage: rsa <file>'
+        exit 1
+else
 
-            div = rho(i, 1)
-            print(f"{i}={i // div}*{div}")
+        while read i
+        do
 
+                result=$(factor "$i")
+                check_factor $result
 
-def rho(n, c):
-    t = 2
-    h = 2
-    d = 1
-
-    while d == 1:
-        t = ((t ** 2) + c) % n
-        h = ((h ** 2) + c) % n
-        h = ((h ** 2) + c) % n
-        d = gcd(t - h, n)
-
-    if d == n:
-        return rho(n, c + 1)
-    return d
-
-
-def gcd(a, b):
-    if(b == 0):
-        return a
-    else:
-        return gcd(b, a % b)
-
-
-if __name__ == '__main__':
-    main()
+        done < "$1"
+fi
