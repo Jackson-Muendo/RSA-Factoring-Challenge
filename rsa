@@ -1,39 +1,29 @@
-#!/usr/bin/bash
-check_factor()
-{
-	if [ $# -ne 3 ];
-        then
-                args= fi
-                count=0
-                num2=1
-                for a in ${args[*]};
-                do
-                        if [ $count -gt 1 ];
-                        then
-                                num2=$(echo $a*$num2 | bc)
-                        fi
-                        count=$((count + 1))
-                done
-        else
-                num2=$3
-        fi
+#!/usr/bin/python3
 
-        num1=$2
-        num=$(echo "$1" | tr ':' '=')
-        echo "$num$num1*$num2"
-}
+"""
+Factorise as many numbers as possible into a product of two smaller numbers.
+"""
 
-if [ $# -ne 1 ]
-then
-        echo 'Usage: rsa <file>'
-        exit 1
-else
 
-        while read i
-        do
+import sys
 
-                result=$(factor "$i")
-                check_factor $result
 
-        done < "$1"
-fi
+def factor_prime():
+    factor_file = sys.argv[1]
+    with open(factor_file) as fd:
+        for number in fd:
+            number = int(number)
+            if number % 2 == 0:
+                    print("{}={}*{}".format(number, number // 2, 2))
+                    continue
+            i = 3
+            while i < number // 2:
+                if number % i == 0:
+                    print("{}={}*{}".format(number, number // i, i))
+                    break
+                i += 2
+
+            if i == (number // 2) + 1:
+                print("{}={}*{}".format(number, number, 1))
+
+factor_prime()
