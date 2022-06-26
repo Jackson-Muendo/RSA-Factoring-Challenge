@@ -1,29 +1,30 @@
 #!/usr/bin/python3
-
-"""
-Factorise as many numbers as possible into a product of two smaller numbers.
-"""
-
-
-import sys
+"""read_file
+    """
+from sys import argv
 
 
-def factor():
-    factor_file = sys.argv[1]
-    with open(factor_file) as fd:
-        for number in fd:
-            number = int(number)
-            if number % 2 == 0:
-                    print("{}={}*{}".format(number, number // 2, 2))
-                    continue
-            i = 3
-            while i < number // 2:
-                if number % i == 0:
-                    print("{}={}*{}".format(number, number // i, i))
-                    break
-                i = i + 2
+def factory(n=0):
+    if (n % 2 == 0):
+        return 2
+    i = 3
+    while i * i <= n:
+        if n % i == 0:
+            return i
+        i += 2
 
-            if i == (number // 2) + 1:
-                print("{}={}*{}".format(number, number, 1))
 
-factor()
+def factors(filename):
+    """read_file(filename)
+    Keyword Arguments:
+        filename {str} -- name of the file (default: {""})
+    """
+    with open(filename, encoding="utf-8") as my_file:
+        for i in my_file.readlines():
+            n = int(i)
+            result = factory(n)
+            print("{}={}*{}".format(int(n), int(n//result), int(result)))
+
+
+if __name__ == "__main__":
+    factors(argv[1])
