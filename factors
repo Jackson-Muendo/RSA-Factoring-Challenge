@@ -1,49 +1,25 @@
-#!/usr/bin/env python3
-import sys
-import os
+#!/usr/bin/python3
+""" My module for testing numbers and finding the factorization """
+import math
+from sys import argv
 
 
-def main():
-    if len(sys.argv) != 2:
-        print("Usage: factors <file>", file=sys.stderr)
-        exit(1)
-    if not os.path.isfile(sys.argv[1]):
-        print(f"factors: File {sys.argv[1]} not found", file=sys.stderr)
-        exit(1)
-
-    with open(sys.argv[1]) as f:
-        for i in f:
-            i = int(i)
-            if i % 2 == 0:
-                print(f"{i}={i // 2}*2")
-                continue
-
-            div = rho(i, 1)
-            print(f"{i}={i // div}*{div}")
+def factor(number, test_num):
+    """ Finds the values to return once a number has been found
+    """
 
 
-def rho(n, c):
-    t = 2
-    h = 2
-    d = 1
-
-    while d == 1:
-        t = ((t ** 2) + c) % n
-        h = ((h ** 2) + c) % n
-        h = ((h ** 2) + c) % n
-        d = gcd(t - h, n)
-
-    if d == n:
-        return rho(n, c + 1)
-    return d
+    print("{}={}*{}".format(number, (number // test_num), test_num))
 
 
-def gcd(a, b):
-    if(b == 0):
-        return a
-    else:
-        return gcd(b, a % b)
-
-
-if __name__ == '__main__':
-    main()
+with open(argv[1], mode="r", encoding="UTF-8") as f:
+    for line in f:
+        number = int(line)
+        if number % 2 == 0:
+            factor(number, 2)
+        else:
+            max_number_to_test = math.floor(math.sqrt(number))
+            for test_num in range(3, max_number_to_test + 1, 2):
+                if number % test_num == 0:
+                    factor(number, test_num)
+                    break
